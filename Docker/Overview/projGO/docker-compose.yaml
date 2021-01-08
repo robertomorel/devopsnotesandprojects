@@ -1,0 +1,33 @@
+version: '3'
+
+################################################################################
+## Cria um container chamado webservego
+## Roda o conteúdo do Dockerfile na raiz na porta 8081
+###############################################################
+## Cria um container chamado nginx
+## Com uma imagem chamada nginx
+## Com um volume que irá compartilhar um conteúdo do comp com o conteiner
+#### Tudo que tiver na pasta nginx:, estará na pasta usr/share/nginx do container
+#### Tudo o que for mudado no computador, mudará no container
+###############################################################
+## Cria um container chamado redis
+## Com uma imagem chamada redis:alpine
+## Expõe a porta 6379
+################################################################################
+services:
+  webservego:
+    build: .
+    ports:
+      - 8088:8080
+
+  nginx:
+    image: nginx
+    volumes: 
+      - ./nginx:/usr/share/nginx/html
+    ports:
+      - 8080:80  
+
+  redis:
+      image: redis:alpine
+      expose: 
+        - 6379     
