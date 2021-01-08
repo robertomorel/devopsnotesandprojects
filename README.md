@@ -7,9 +7,9 @@ Este repositório irá armazenar todas as anotações e projetos criados durante
 # Glossário!
 
   - Arquitetura de Software
-  -- Microserviços
-  -- Solid
-  -- DDD
+    - Microserviços
+    - Solid
+    - DDD
   - Docker
   - Microsserviços
   - RabbitMQ
