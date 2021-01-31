@@ -11,6 +11,14 @@ Este repositório irá armazenar todas as anotações e projetos criados durante
     - Solid
     - DDD
   - Docker
+    - Comandos gerais
+    - Containers
+    - Imagens
+    - Volumes
+    - Networks
+    - Dockerfile
+    - Docker Compose
+    - Projeto Laravel PHP utilizando build com Dockerfile e docker-compose. [Aqui!!][Laravel PHP]
   - Microsserviços
   - RabbitMQ
   - Autenticação
@@ -22,3 +30,4 @@ Este repositório irá armazenar todas as anotações e projetos criados durante
    [devops]: <https://https://github.com/robertomorel/devopsnotesandprojects>
    [git-repo-url]: <https://https://github.com/robertomorel/devopsnotesandprojects.git>
    [Code Education]: <https://portal.code.education/>
+   [Laravel PHP]: <https://github.com/robertomorel/devopsnotesandprojects/tree/master/Docker/laravel>
