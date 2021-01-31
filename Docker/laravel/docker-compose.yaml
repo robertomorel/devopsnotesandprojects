@@ -1,3 +1,4 @@
+#version: '2.3'
 version: '3'
 
 services: 
@@ -7,7 +8,13 @@ services:
     volumes: 
       - .:/var/www
     networks:
-      - app-network  
+      - app-network 
+    #depends_on: # Não funciona na versão 3   
+    #  db:
+    #    condition: service_healthy
+    depends_on: # Na versão 3, estabelece a ordem de execução
+      - db
+      - redis
 
   nginx:
     build: .docker/nginx # Onde está o dockerfile
@@ -20,7 +27,32 @@ services:
       - .:/var/www # Compartilhar pasta atual com pasta /var/www do container
     networks:
       - app-network    
+    depends_on: # Na versão 3, estabelece a ordem de execução
+      - app  
   
+  db:
+    build: .docker/mysql
+    command: --innodb-use-native-aio=0 # Para evitar problemas de tipos de dados/arquivos/extensões
+    container_name: db    
+    restart: always
+    tty: true
+    ports:
+      - "33006:3306"
+    volumes: # Para que os dados do DB não sejam perdidos caso o container pare de rodar
+      - ./.docker/dbdata:/var/lib/mysql # Vai criar uma pasta chamada dbdata para guardar os dados do mysql que estão no /var/lib/mysql do container
+
+    environment: # Variáveis de ambiente desta imagem que será baixada
+      - MYSQL_DATABASE=laravel
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root 
+    networks:
+      - app-network   
+    #healthcheck: # Não funciona na versão 3  
+    #  test: [] # Rodar um comando para garantir que o serviço está funcionando
+    #  interval: 10s # Caso o comando acima não dê certo, aguardar 10s
+    #  timeout: 10s   
+    #  retries: 4 # Tentar 4x
+
   redis:
     image: redis:alpine
     expose: 

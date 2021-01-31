@@ -4,3 +4,23 @@
     - docker-compose up -d --build (para buildar novamente o Dockerfile)
 2. Para parar todos os containers
     - docker-compose down    
+3. Configuração do framework Laravel no container do php
+    - Execute: 'composer install'
+    - Ajuste o arquivo .env
+        DB_CONNECTION=mysql
+        DB_HOST=db
+        DB_PORT=3306
+        DB_DATABASE=laravel
+        DB_USERNAME=root
+        DB_PASSWORD=root
+
+        REDIS_HOST=redis
+        REDIS_PASSWORD=null
+        REDIS_PORT=6379
+    - Execute: 'php artisan key:generate' 
+    - Execute: 'php artisan migrate'    
+4. Criação de imagem e upload ao Dockerhub
+    - Crie a imagem: docker commit <id> nome_da_nova_imagem:v1
+    - Crie uma tag: docker tag nome_da_nova_imagem:v1 YOUR_DOCKERHUB_NAME/nome_da_nova_imagem:v1
+    - Login no Dockerhub: docker login
+    - Upload: docker push YOUR_DOCKERHUB_NAME/nome_da_nova_imagem:v1
