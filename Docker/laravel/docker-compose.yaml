@@ -5,6 +5,16 @@ services:
   app:
     build: .
     container_name: app
+    # Utiliza o dockerize para que o app aguarde o db rodar na porta 3306 (do container) antes de subir o app
+    # Utilizará um template que está em ./.docker/app/.env para setar informações no .env
+    # Essa tentativa se estende por 40s
+    # Após rodar o db, o entrypoint que será rodado é o bash ./.docker/entrypoint.sh
+    entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s ./.docker/entrypoint.sh
+    environment: 
+      - DB_HOST=db
+      - DB_DATABASE=laravel
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
     volumes: 
       - .:/var/www
     networks:
@@ -13,7 +23,7 @@ services:
     #  db:
     #    condition: service_healthy
     depends_on: # Na versão 3, estabelece a ordem de execução
-      - db
+      #- db # Dependência comentada após uso do dockerize
       - redis
 
   nginx:
