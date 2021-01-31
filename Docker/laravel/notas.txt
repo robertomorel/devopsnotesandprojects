@@ -1,0 +1,6 @@
+1. Para rodar o docker-compose
+    - docker-compose up
+    - docker-compose up -d (em background)
+    - docker-compose up -d --build (para buildar novamente o Dockerfile)
+2. Para parar todos os containers
+    - docker-compose down    

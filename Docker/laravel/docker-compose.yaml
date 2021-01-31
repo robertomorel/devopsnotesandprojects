@@ -1,0 +1,33 @@
+version: '3'
+
+services: 
+  app:
+    build: .
+    container_name: app
+    volumes: 
+      - .:/var/www
+    networks:
+      - app-network  
+
+  nginx:
+    build: .docker/nginx # Onde está o dockerfile
+    container_name: nginx # Nome do container
+    restart: always # Reiniciar caso o container ou o processo caia?
+    tty: true # Entrar de forma interativa no container (-it)
+    ports: 
+      - "8000:80"
+    volumes: 
+      - .:/var/www # Compartilhar pasta atual com pasta /var/www do container
+    networks:
+      - app-network    
+  
+  redis:
+    image: redis:alpine
+    expose: 
+      - 6379
+    networks:
+      - app-network    
+
+networks: 
+  app-network:
+    driver: bridge      

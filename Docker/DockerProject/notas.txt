@@ -1,2 +1,0 @@
-1. Para rodar o docker-compose
-    - docker-compose up
