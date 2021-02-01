@@ -19,7 +19,7 @@ Git
 			Na pasta do projeto pessoal (GitHub), clicar em "New pull request"
 			Confirma as informações de merge
 			Clicar em "Create pull request"  
-	GITFLOX
+	GITFLOW
 		Metodologia
 			Padronização (flow) básica de publicação
 				git checkout -b feature/registro
