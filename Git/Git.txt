@@ -1,0 +1,350 @@
+Git
+	CONTRIBUINDO COM PROJETOS DE TERCEIROS (Fork)
+		Abre o projeto de terceiro (GitHub)
+		Clica em "Fork" (GitHub) 
+			Cria um repo pessoal idêntico ao original
+		Clona o projeto pessoal
+			git clone https://github.com/path_do_projeto_forkado
+		Realiza as alterações
+		Commita o código
+			git add -A
+			git commit -m "" [ou git commit -am ""]
+		Busca o branch do serv remoto
+			git branch [5.x]
+		Busca o nome do serv remoto
+			git remote -v [origin]
+		Push no projeto pessoal
+			git push origin 5.x 
+		Para enviar do projeto pessoal para o original
+			Na pasta do projeto pessoal (GitHub), clicar em "New pull request"
+			Confirma as informações de merge
+			Clicar em "Create pull request"  
+	GITFLOX
+		Metodologia
+			Padronização (flow) básica de publicação
+				git checkout -b feature/registro
+					Indicação de uma nova feature de registro 
+				git checkout -b hotfix/registro
+					Indica correção de bug de registro
+				gut push origin develop
+					Push no branch develop
+				git checkout master && git merge develop
+					Merge do master com o develop
+			Branchs principais
+				Master
+					Sempre vai conter o código fonte em produção
+				Develop
+					Conceitos
+						Código no ciclo de desenvolvimento
+						Os branchs auxiliares sempre serão mergeados a partir do Develop
+					Branchs auxiliares
+						Features
+							Criar uma feature a partir de um último push do branch Develop
+							Exemplo:
+								a. Implementar uma feature
+								b. git checkout develop
+								c. git merge feature/register
+									Merge da feature para o Develop
+						Releases
+							Criar uma release a partir de um último push do branch Develop
+							Lançar uma nova versão da aplicação
+							Develop -> Release -> Master
+							Pode conter várias features
+							Exemplo:
+								a. git checkout develop
+								b. git checkout -b release/1.0.0
+									[-b] Criando um novo branch chamado release/1.0.0, baseado no conteúdo do branch Develop
+								c. get checkout master
+								d. get merge release/1.0.0
+							Criar uma nova tag
+						Hotfix
+							Criar uma hotfix a partir de um último push do branch Develop
+							Branch para correção de erros
+							Tanto o master quando o Develop podem receber os Hotfix
+							Exemplo:
+								a. git checkout master
+								b. git merge hotfix/recurso
+								c. git checkout develop
+								d. git merge hotfix/recurso
+								e. git branch -D hotfix/recurso
+			Regras
+				Nunca commitar diretamente no master
+		Extensão [GitFlow]
+			Iniciando
+				Instala a instensão do GitFlox
+					Tutorial de instalação
+						https://github.com/nvie/gitflow/wiki/installation
+				git flow init
+			Features
+				git flow feature start feature/register
+				Finaliza a feature
+				git flow feature finish feature/register
+			Release
+				git flow release start "1.0.0"
+				Finaliza a release
+				git flow release finish "1.0.0"
+			Hotfix
+				git flow hotfix start hotfix/register
+				Finaliza a feature
+				git flow hotfix finish hotfix/register
+		Projeto do Zero com Git Flow
+			git flow init
+			Perguntas
+				Branch para produção: master
+				Branch para desenvolvimento: develop
+				Prefixo do branch Feature: feature/
+				Prefixo do branch Release: release/
+				Prefixo do branch Hotfix: hotfix/
+				Prefixo do branch Support: support/
+				Prefixo para tags de versão: none
+			* Coloca o branch develop como principal
+			Trabalhando com Features
+				git flow feature start register
+					Criando uma funcionalidade "register"
+					Cria o branch "feature/register" baseado no develop
+				* Cria arquivos no projeto para a funcionalidade
+					Confirmar arquivos novos com "> git status"
+				git add .
+				git commit -m "Adding the first feature"
+				* Confirma com "> git log" 
+				git flow feature finish register 
+					Joga a alteração para o branch develop
+					Merge com develop
+					Deleta feature/register
+					Volta o principal para o develop
+			Trabalhando com Releases
+				git flow release start 0.1.0
+					Cria branch release/0.1.0
+				git flow release finish '0.1.0'
+					Merge do branch release/0.1.0 com o master
+				Escreva um texto para a tag da release
+				* Confirma com ">git tag"
+			Trabalhando com Hotfix
+				git flow hotfix start nome_do_hotfix
+					Para ajustar algo na última release
+				git commit -am "Texto explicativo"
+				git flow hotfix finish nome_do_hotfix
+				Escreve a mensagem do merge
+				* Confirma com ">git tag"
+	GITHUB
+		Features | Pull Request [develop]
+			Conceito
+				Subir algo que está em outro repo ou branch e dá a sugestão de merge pela "Pull Request"
+				Revisões de código antes do merge para a produção
+			Passo-a-passo
+				* Cria um repositório no GitHub
+				Baixando repositório e atualizando os branchs
+					git remote add origin https://github.com/path
+					git push -u origin master
+					git push origin develop --tags
+				Iniciando nova feature
+					git flow feature start feature_name
+					* realiza os ajustes do featura
+					git add .
+					git commit -m "comentário"
+					git push origin feature/feature_name
+						Subiu branch para o repositório remoto
+				Pull Request [master]
+					Na tela do GitHub: clicar em "Compare & pull request"
+						Ou "new pull request"
+					Mudar base: develop
+					Cria comentário do pull
+					Clicar em "Create pull request"
+					Clicar em "Merge pull request"
+						Apenas após revisão dos especialistas 
+					Merge pull request
+					Clicar em "Confirm Merge"
+					Clicar em "Deletar Branch"
+						Finish branch
+				Obs.: por este modelo de gitflox, utilizando o github, não é necessário rodar o comando >git flow feature finish feature_name
+					No lugar disso, podem ser rotados os comandos
+						git checkout develop
+						git pull origin develop
+						git branch
+						git branch -D feature/feature_name
+		Release | Pull Request [master]
+			Conceitos
+				Nova versão do sistema
+				Sempre os dados da release devem ser iguais ao develop e master (local)
+			Passo-a-passo
+				Criando uma release
+					git flow release start 0.1.0
+						Cria um novo branch 'release/0.1.0'
+				Subir o branch para o GitHub
+					git push origin release/0.2.0
+				Pull Request [master]
+					Na tela do GitHub: clicar em "Compare & pull request"
+						Ou "new pull request"
+					Mudar base: master
+					Cria comentário do pull
+					Clicar em "Create pull request"
+					Clicar em "Merge pull request"
+						Apenas após revisão dos especialistas 
+					Clicar em "Confirm Merge"
+					Clicar em "Deletar Branch"
+						Finish branch
+				git flow release finish "0.1.0"
+					Merge na release
+				Criar uma descrição para a tag (o que a release está fazendo)
+					Depois desse passo, passa para o branch master
+				git pull origin master
+				git checkout develop
+				git merge master
+				* Para confirmar ">git log"
+				git push origin develop --tags
+		Hotfix | Pull Request [develop/master]
+			Conceitos
+				Bugs no processo de desenvolvimento (branch develop)
+				Sempre que trabalhamos com eles, precisamos atualizar os branchs master e develop
+			Passo-a-passo
+				git flow hotfix start 0.1.1
+					Para ajustar algo na última release
+					Será criado um branch a partir do master
+				git commit -am "Texto explicativo"
+				git push origin hotfix/0.1.1
+				Pull Request [master]
+					Na tela do GitHub: clicar em "Compare & pull request"
+						Ou "new pull request"
+					Mudar base: master
+					Cria comentário do pull
+					Clicar em "Create pull request"
+					Clicar em "Merge pull request"
+						Apenas após revisão dos especialistas 
+					Clicar em "Confirm Merge"
+					Delete branch
+						Deleta o branch hotfix/0.1.1 no remoto
+				git checkout master
+				git pull origin master
+				git branch -D hotfix/0.1.1
+				git tag 0.1.1
+				git checkout develop
+				git merge master
+				git push origin develop --tags
+					Para subir as tags
+	COMANDOS
+		Config / Base
+			Versão do Git
+				git --version
+			Alterar config cadastrais do Git
+				git config --global user.name "Nome"
+				git config --global user.email "E-mail"
+				git config --global core.editor VSCode/Sub/Netbeans
+			Ler config cadastrais do Git
+				git config user.email
+				git config user.name
+				git config list [todas as configurações do git]
+			Settar conf. após commmit
+				git commit --amend --reset-author
+			Mostrar arquivos em pasta
+				dir
+				tree /f [arquivos em formato de arvore]  
+			Para criar uma pasta
+				mkdir
+		Git Local
+			Para criar um repositório local
+				c:/path> git init
+			Para saber o status (o que foi alterado)
+				git status
+			Para adicionar arquivos não monitorados
+				git add README.md [apenas o arquivo README.md]  
+				git add -A [todos os arquivos] 
+			Para commitar um projeto
+				git commit -m "Commit..."
+			Para commitar um projeto sem necessitar adicionar no monitoramento
+				git commit -am "Commit..." 
+			Para saber a lista de todos os commits daquele branch
+				git log 
+					commit 7f2de7cee1dc6d71ed9053c9eaf07f107051d2b1
+Author: robertomorel <game.developer.br@gmail.com>
+Date:   Thu Jul 16 15:16:35 2020 -0300 
+			Para listar os branchs e mostrar o principal
+				git branch 
+			Para retornar à um estado do branch
+				git reset --soft id_do_commit [volta ao branch e mantém os arquivos implementados e monitorados]
+				git reset --mixed id_do_commit [volta ao branch e mantém os arquivos implementados, mas não monitorados, ou seja, precisa dar o 'git add']
+				git reset --hard id_do_commit [volta ao branch e apaga os arquivos implementados. Branch limpo.]   
+				Ex.: id_do_commit = 7f2de7cee1dc6d71ed9053c9eaf07f107051d2b1
+			Para criar um novo branch
+				git branch dev
+			Para mudar o brach ativo
+				git checkout dev [mudou para o branch 'dev']
+			Para ver a diferença do que foi commitado e novas alterações
+				git diff
+			Para ver todos os arquivos que foram alterados
+				git diff --name-only
+			Para ver alterações de um arquivo específico
+				git diff index.html
+			Para retornar apenas um arquivo para um branch diferente 
+				git checkout HEAD -- index.html 
+			Para deletar um branch local
+				git branch -D dev
+		Git Remoto
+			Dependência
+				Instalar o bash
+				(Gib Bash Here)
+			Para transferir um projeto em branchs locais para um remoto (GitHub)
+				Cria o projeto no GitHub  
+				Entra no bash na pasta do projeto (Gib Bash Here)
+				git remote add origin https://github.com/path_do_projeto
+				git push -u origin master [enviar o branch master] 
+				Informar o usuário e senha
+			Para confirmar a transf. do projeto para o remoto
+				Entra no bash na pasta do projeto (Gib Bash Here) 
+				git remote
+				git remote -v [ver mais detalhes de opções]  
+			Para atualizar o branch remoto após uma atualização no projeto local
+				Entra no bash na pasta do projeto (Gib Bash Here)
+				git add -A
+				git commit -m "" [ou git commit -am ""]
+				git push origin master
+			Para reverter um commit específico feito no remote
+				Entra no bash na pasta do projeto (Gib Bash Here)
+				git revert --no-edit id_do_commit 
+				Obs.: ele cria um novo commit revertendo o anterior
+			Para enviar outro branch remoto
+				Entra no bash na pasta do projeto (Gib Bash Here)
+				git push origin dev
+			Para deletar um branch remoto
+				Entra no bash na pasta do projeto (Gib Bash Here)
+				git push origin :dev
+			Para atualizar o branch local a partir do remoto
+				Entra no bash na pasta do projeto (Gib Bash Here)
+				git pull [git pull origin master -> para um branch específico] 
+				Obs.: sempre antes de dar um 'push', dar um 'pull'
+			Para clonar o projeto
+				git clone https://github.com/path_do_projeto
+	CHAVE SSH
+		Tutorial
+			https://docs.github.com/en/github/authenticating-to-github/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+		Abrir o 'bash'
+		Cola o comando:
+			ssh-keygen -t rsa -b 4096 -C "game.developer.br@gmail.com"
+		Enter para confirmar o local de salvamento da Key SSH
+		Digite uma senha e Enter (apenas Enter caso não precise de senha)
+		Repita a senha e Enter (apenas Enter caso não precise de senha)
+		Procura a pasta onde tem o arquivo id_rsa (público)
+		Abre arquivo
+		Copia conteúdo
+		No GitHub
+			User/Settings
+			SSH and GPG Keys   
+			New SSH Key
+			Colar o conteúdo do arquivo
+			Settar um título
+	CONCEITOS
+		Branch
+			São versões diferentes do sistema
+			Master - Versão principal do sistema
+		.gitignore
+			Arquivo para configuração de elementos do projetos que não subirão para o git remoto
+			Exemplo: *.sql | *.txt | pasta/*
+SEMVER
+	Semantic Versioning
+	X.Y.Z
+		X - Major Version
+			Quebra a compatibilidade com todas as versões anteriores
+		Y - Minor Version
+			Meio termo entre Major e Minor
+			Add novas features, mas a compatibilidade mantém
+		Z - Patch Version
+			Para correção de bugs
