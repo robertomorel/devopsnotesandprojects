@@ -10,6 +10,7 @@ services:
     # Essa tentativa se estende por 40s
     # Após rodar o db, o entrypoint que será rodado é o bash ./.docker/entrypoint.sh
     entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s ./.docker/entrypoint.sh
+    #entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s php-fpm
     environment: 
       - DB_HOST=db
       - DB_DATABASE=laravel
@@ -48,8 +49,8 @@ services:
     tty: true
     ports:
       - "33006:3306"
-    volumes: # Para que os dados do DB não sejam perdidos caso o container pare de rodar
-      - ./.docker/dbdata:/var/lib/mysql # Vai criar uma pasta chamada dbdata para guardar os dados do mysql que estão no /var/lib/mysql do container
+    #volumes: # Para que os dados do DB não sejam perdidos caso o container pare de rodar
+    #  - ./.docker/dbdata:/var/lib/mysql # Vai criar uma pasta chamada dbdata para guardar os dados do mysql que estão no /var/lib/mysql do container
 
     environment: # Variáveis de ambiente desta imagem que será baixada
       - MYSQL_DATABASE=laravel
