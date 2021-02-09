@@ -1,0 +1,19 @@
+####################################################################################
+# Arquivo que o Google Cloud Build vai ler e executar passo a passo
+# Podemos pedir pro Google CB rodar um Dockerfile ou rodar o pipeline
+#### É melhor o pipeline, pq podemos fazer testes mais aprofundados, passo-a-passo
+####################################################################################
+
+# Passos a serem executados
+steps: 
+
+  - id: "Rodando docker-compose"
+    # Informar qual a imagem que o Docker tem para rodar o docker-compose 
+    # gcr: Google Cloud Registery
+    name: 'gcr.io/$PROJECT_ID' 
+    # Argumentos:
+    # -f: informar ql é o arquivo
+    # docker-compose.cloudbuild.yaml: arquivo que será utilizado
+    # up: rodar o comando 'up' do docker-compose
+    # -d: rodar o comando '-d' do docker-compose 
+    arg: ['-f', 'docker-compose.cloudbuild.yaml', 'up', '-d']

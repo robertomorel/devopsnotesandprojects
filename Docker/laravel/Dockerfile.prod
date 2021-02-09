@@ -5,7 +5,7 @@
 # Imagem
 FROM php:7.3.6-fpm-alpine3.9 as builder
 
-RUN apk add --no-cache shadow mysql-client nodejs npm
+RUN apk add --no-cache shadow bash mysql-client nodejs npm
 
 # Instalação das extensões do php
 RUN docker-php-ext-install pdo pdo_mysql

@@ -1,0 +1,75 @@
+#version: '2.3'
+version: '3'
+
+services: 
+  app:
+    build: .
+    container_name: app
+    # Utiliza o dockerize para que o app aguarde o db rodar na porta 3306 (do container) antes de subir o app
+    # Utilizará um template que está em ./.docker/app/.env para setar informações no .env
+    # Essa tentativa se estende por 40s
+    # Após rodar o db, o entrypoint que será rodado é o bash ./.docker/entrypoint.sh
+    #entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s ./.docker/entrypoint.sh
+    #environment: 
+    #  - DB_HOST=db
+    #  - DB_DATABASE=laravel
+    #  - DB_USERNAME=root
+    #  - DB_PASSWORD=root
+    volumes: 
+      - .:/var/www
+    networks:
+      - app-network 
+    #depends_on: # Não funciona na versão 3   
+    #  db:
+    #    condition: service_healthy
+    depends_on: # Na versão 3, estabelece a ordem de execução
+      #- db # Dependência comentada após uso do dockerize
+      - redis
+
+  nginx:
+    build: .docker/nginx # Onde está o dockerfile
+    container_name: nginx # Nome do container
+    restart: always # Reiniciar caso o container ou o processo caia?
+    tty: true # Entrar de forma interativa no container (-it)
+    ports: 
+      - "8000:80"
+    volumes: 
+      - .:/var/www # Compartilhar pasta atual com pasta /var/www do container
+    networks:
+      - app-network    
+    depends_on: # Na versão 3, estabelece a ordem de execução
+      - app  
+  
+  db:
+    build: .docker/mysql
+    command: --innodb-use-native-aio=0 # Para evitar problemas de tipos de dados/arquivos/extensões
+    container_name: db    
+    restart: always
+    tty: true
+    ports:
+      - "33006:3306"
+    volumes: # Para que os dados do DB não sejam perdidos caso o container pare de rodar
+      - ./.docker/dbdata:/var/lib/mysql # Vai criar uma pasta chamada dbdata para guardar os dados do mysql que estão no /var/lib/mysql do container
+
+    environment: # Variáveis de ambiente desta imagem que será baixada
+      - MYSQL_DATABASE=laravel
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=root 
+    networks:
+      - app-network   
+    #healthcheck: # Não funciona na versão 3  
+    #  test: [] # Rodar um comando para garantir que o serviço está funcionando
+    #  interval: 10s # Caso o comando acima não dê certo, aguardar 10s
+    #  timeout: 10s   
+    #  retries: 4 # Tentar 4x
+
+  redis:
+    image: redis:alpine
+    expose: 
+      - 6379
+    networks:
+      - app-network    
+
+networks: 
+  app-network:
+    driver: bridge      
