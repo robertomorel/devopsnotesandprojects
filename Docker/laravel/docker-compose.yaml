@@ -49,8 +49,8 @@ services:
     tty: true
     ports:
       - "33006:3306"
-    #volumes: # Para que os dados do DB não sejam perdidos caso o container pare de rodar
-    #  - ./.docker/dbdata:/var/lib/mysql # Vai criar uma pasta chamada dbdata para guardar os dados do mysql que estão no /var/lib/mysql do container
+    volumes: # Para que os dados do DB não sejam perdidos caso o container pare de rodar
+      - ./.docker/dbdata:/var/lib/mysql # Vai criar uma pasta chamada dbdata para guardar os dados do mysql que estão no /var/lib/mysql do container
 
     environment: # Variáveis de ambiente desta imagem que será baixada
       - MYSQL_DATABASE=laravel

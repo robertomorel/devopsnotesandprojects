@@ -1,7 +1,7 @@
 # Imagem
 FROM php:7.3.6-fpm-alpine3.9
 
-RUN apk add --no-cache shadow mysql-client nodejs npm
+RUN apk add --no-cache shadow bash mysql-client nodejs npm
 
 #RUN apk add --no-cache shadow
 # Instalação dos pacotes bash e mysql-client
