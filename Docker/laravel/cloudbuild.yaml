@@ -7,9 +7,9 @@
 # Passos a serem executados
 steps: 
 
-  - id: "Rodando docker-compose"
+  - id: "Rodando docker-compose:1.24.0"
     # Informar qual a imagem que o Docker tem para rodar o docker-compose 
-    # gcr: Google Cloud Registery
+    # gcr: Google Cloud Registry
     name: 'gcr.io/$PROJECT_ID' 
     # Argumentos:
     # -f: informar ql é o arquivo
@@ -17,3 +17,8 @@ steps:
     # up: rodar o comando 'up' do docker-compose
     # -d: rodar o comando '-d' do docker-compose 
     arg: ['-f', 'docker-compose.cloudbuild.yaml', 'up', '-d']
+
+  # Garantir que todos os containers estão rodando  
+  - id: "Rodando docker ps"
+    name: 'gcr.io/cloud-builders/docker'
+    arg: ['ps']  
