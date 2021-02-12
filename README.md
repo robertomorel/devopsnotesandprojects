@@ -19,6 +19,16 @@ Este repositório irá armazenar todas as anotações e projetos criados durante
     - Dockerfile
     - Docker Compose
     - Projeto Laravel PHP utilizando build com Dockerfile e docker-compose. [Aqui!!][Laravel PHP]
+  - Git
+    - Chave SHH:
+    - Criando um Fork (Contribuindo com projetos de terceiros)
+    - Gitflow
+    - Github
+    - Versionamento Semântico  
+  - Integração Contínua
+    - Conceito e boas práticas
+    - Google Cloud Build
+    - Para acessar ao pipeline usado, clique [aqui](https://github.com/robertomorel/devopsnotesandprojects/blob/master/Docker/laravel/cloudbuild.yaml)!  
   - Microsserviços
   - RabbitMQ
   - Autenticação
