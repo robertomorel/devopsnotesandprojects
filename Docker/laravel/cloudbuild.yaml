@@ -10,7 +10,7 @@ steps:
   - id: "Rodando docker-compose:1.24.0"
     # Informar qual a imagem que o Docker tem para rodar o docker-compose 
     # gcr: Google Cloud Registry
-    name: 'gcr.io/$PROJECT_ID' 
+    name: 'gcr.io/$PROJECT_ID' #name: 'docker/compose' 
     # Argumentos:
     # -f: informar ql é o arquivo
     # docker-compose.cloudbuild.yaml: arquivo que será utilizado
@@ -18,7 +18,39 @@ steps:
     # -d: rodar o comando '-d' do docker-compose 
     arg: ['-f', 'docker-compose.cloudbuild.yaml', 'up', '-d']
 
+  # Com este step estamos executando o comando CHOWN utilizando o usuário root do container 
+  # (necessário para rodar este comando, pois o usuário padrão é o www-data), 
+  # este comando mudará a propriedade de /var/www e seus descendentes para www-data.  
+  - id: "Chown in /var/www"
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
+    args: ['exec','-u','root','-t','app','chown','-R','www-data:www-data','/var/www']
+
   # Garantir que todos os containers estão rodando  
   - id: "Rodando docker ps"
-    name: 'gcr.io/cloud-builders/docker'
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
     arg: ['ps']  
+
+  # Instalar o composer dentro do container do app
+  - id: "Rodando composer"  
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
+    arg: ['exec', '-t', 'app', 'composer', 'install']   
+
+  # Copiando .env
+  - id: "Copiando .env"  
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
+    arg: ['exec', '-t', 'app', 'cp', '.env.example', '.env']    
+
+  # Rodando key:generate
+  - id: "Rodando key:generate"  
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
+    arg: ['exec', '-t', 'app', 'php', '/var/www/artisan', 'key:generate']   
+    
+  # Rodando as migrações
+  - id: "Rodando migrations"  
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
+    arg: ['exec', '-t', 'app', 'php', '/var/www/artisan', 'migrate']   
+    
+  # Rodando os testes
+  - id: "Rodando phpunit"  
+    name: 'gcr.io/cloud-builders/docker' #name: 'docker'
+    arg: ['exec', '-t', 'app', 'php', '/var/www/vendor/bin/phpunit', '-c', '/var/www/phpunit.xml']    
